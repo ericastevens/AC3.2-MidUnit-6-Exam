@@ -160,23 +160,41 @@ class AnimationsViewController: UIViewController, CellTitled {
     
     // MARK: - Dynamics
     internal func setupBehaviorsAndAnimators() {
+        
         // 1. Instantiate your dynamicAnimator
-        
-        // 2. Instantiate/setup your behaviors
-        //      a. Collision
-        
-        //      b. Gravity
-        
-        //      c. Bounce
-        
-        // 3. Add your behaviors to the dynamic animator
+//        self.dynamicAnimator = UIDynamicAnimator(referenceView: self.view)
+//        
+//        // 2. Instantiate/setup your behaviors
+//        //      a. Collision
+//                let collision = UICollisionBehavior(items: [usernameContainerView])
+//                collision.translatesReferenceBoundsIntoBoundary = true
+//                        
+//        //      b. Gravity
+//                let gravity = UIGravityBehavior(items: [usernameContainerView])
+//                let vector = CGVector(dx: 1.0, dy: 0.0)
+//                gravity.gravityDirection = vector
+//                
+//        //      c. Bounce
+//                let bounce = UIDynamicItemBehavior(items: [usernameContainerView])
+//                bounce.elasticity = 0.8
+//        
+//        // 3. Add your behaviors to the dynamic animator
+//                self.dynamicAnimator?.addBehavior(collision)
+//                self.dynamicAnimator?.addBehavior(gravity)
+//                self.dynamicAnimator?.addBehavior(bounce)
 
     }
     
     // MARK: Slide Animations
     internal func addSlidingAnimationToUsername() {
+//        var originalPosition = self.usernameContainerView.center
+//        self.usernameContainerView.center = CGPoint(x: self.view.frame.size.width / 2, y: self.usernameContainerView.)
+//        
+//        // 1. Add in animation for just the usernameContainerView here (the textField is a subview, so it will animate with it)
+//            let animator = UIViewPropertyAnimator(duration: 1, dampingRatio: 1.0) { 
+//                
+//        }
         
-        // 1. Add in animation for just the usernameContainerView here (the textField is a subview, so it will animate with it)
         //  Note: You must use constraints to do this animation
         //  Reminder: You need to call something self.view in order to apply the new constraints
         
@@ -199,7 +217,6 @@ class AnimationsViewController: UIViewController, CellTitled {
         //  Reminder: There is a small delay you need to account for
         
     }
-    
     internal func startSlidingAnimations() {
 
         // 1. Begin the animations
@@ -209,8 +226,31 @@ class AnimationsViewController: UIViewController, CellTitled {
     // MARK:  Scale & Fade-In Logo
     internal func animateLogo() {
         // 1. Ensure the scale and alpha are set properly prior to animating
+        let scaleFactor: CGFloat = 0.75
+        let newAlpha: CGFloat = 1
+        let timing = UICubicTimingParameters(animationCurve: UIViewAnimationCurve.linear)
         
         // 2. Add the animations
+        
+        let animator = UIViewPropertyAnimator()
+    
+        animator.addAnimations {
+            self.fireDatabaseLogo.isHidden = true
+            let scaleTrans = CGAffineTransform(scaleX: scaleFactor, y: scaleFactor)
+            self.fireDatabaseLogo.transform = scaleTrans
+            
+        }
+        animator.startAnimation()
+        
+        let enlargeWithAlphaAnimator = UIViewPropertyAnimator(duration: 1, timingParameters: timing)
+        
+        enlargeWithAlphaAnimator.addAnimations {
+            self.fireDatabaseLogo.isHidden = false
+            let scaleTrans = CGAffineTransform(scaleX: 1, y: 1)
+            self.fireDatabaseLogo.transform = scaleTrans
+            self.fireDatabaseLogo.alpha = newAlpha
+        }
+        enlargeWithAlphaAnimator.startAnimation()
         
     }
     
