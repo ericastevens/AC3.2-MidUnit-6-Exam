@@ -162,38 +162,40 @@ class AnimationsViewController: UIViewController, CellTitled {
     internal func setupBehaviorsAndAnimators() {
         
         // 1. Instantiate your dynamicAnimator
-//        self.dynamicAnimator = UIDynamicAnimator(referenceView: self.view)
-//        
+        self.dynamicAnimator = UIDynamicAnimator(referenceView: self.view)
+//
 //        // 2. Instantiate/setup your behaviors
 //        //      a. Collision
-//                let collision = UICollisionBehavior(items: [usernameContainerView])
-//                collision.translatesReferenceBoundsIntoBoundary = true
-//                        
+                let collision = UICollisionBehavior()
+                collision.translatesReferenceBoundsIntoBoundary = true
+//
 //        //      b. Gravity
-//                let gravity = UIGravityBehavior(items: [usernameContainerView])
-//                let vector = CGVector(dx: 1.0, dy: 0.0)
-//                gravity.gravityDirection = vector
-//                
+                let gravity = UIGravityBehavior()
+                let vector = CGVector(dx: 1.0, dy: 0.0)
+                gravity.gravityDirection = vector
+//
 //        //      c. Bounce
-//                let bounce = UIDynamicItemBehavior(items: [usernameContainerView])
-//                bounce.elasticity = 0.8
-//        
+                let bounce = UIDynamicItemBehavior()
+                bounce.elasticity = 0.8
+//
 //        // 3. Add your behaviors to the dynamic animator
-//                self.dynamicAnimator?.addBehavior(collision)
-//                self.dynamicAnimator?.addBehavior(gravity)
-//                self.dynamicAnimator?.addBehavior(bounce)
-
+                self.dynamicAnimator?.addBehavior(collision)
+                self.dynamicAnimator?.addBehavior(gravity)
+                self.dynamicAnimator?.addBehavior(bounce)
+//
     }
     
     // MARK: Slide Animations
     internal func addSlidingAnimationToUsername() {
-//        var originalPosition = self.usernameContainerView.center
-//        self.usernameContainerView.center = CGPoint(x: self.view.frame.size.width / 2, y: self.usernameContainerView.)
-//        
+        let originalPosition = self.usernameContainerView.center
+        
+//
 //        // 1. Add in animation for just the usernameContainerView here (the textField is a subview, so it will animate with it)
-//            let animator = UIViewPropertyAnimator(duration: 1, dampingRatio: 1.0) { 
-//                
-//        }
+            let animator = UIViewPropertyAnimator(duration: 1, dampingRatio: 1.0) { 
+              self.usernameContainerView.center = CGPoint(x: self.view.frame.size.width / 2, y: originalPosition.y)
+        }
+
+        animator.startAnimation()
         
         //  Note: You must use constraints to do this animation
         //  Reminder: You need to call something self.view in order to apply the new constraints
@@ -203,6 +205,19 @@ class AnimationsViewController: UIViewController, CellTitled {
     internal func addSlidingAnimationToPassword() {
         
         // 1. Add in animation for just the passwordContainerView here (the textField is a subview, so it will animate with it)
+        let originalPosition = self.passwordContainerView.center
+//        let timing = UICubicTimingParameters(animationCurve: .easeOut)
+//        let animator = UIViewPropertyAnimator(duration: 1, timingParameters: timing)
+//       a
+//        animator.addAnimations {
+//            self.passwordContainerView.center = CGPoint(x: self.view.frame.size.width / 2, y: originalPosition.y)
+//        }
+//    
+        let animator = UIViewPropertyAnimator(duration: 1, dampingRatio: 1.0) {
+            self.passwordContainerView.center = CGPoint(x: self.view.frame.size.width / 2, y: originalPosition.y)
+        }
+        
+        animator.startAnimation(afterDelay: TimeInterval.abs(0.3))
         //  Note: You must use constraints to do this animation
         //  Reminder: You need to call something self.view in order to apply the new constraints
         //  Reminder: There is a small delay you need to account for
@@ -212,6 +227,14 @@ class AnimationsViewController: UIViewController, CellTitled {
     internal func addSlidingAnimationToLoginButton() {
         
         // 1. Add in animation for just the login button
+        let originalPosition = self.loginButton.center
+        
+        let animator = UIViewPropertyAnimator(duration: 1, dampingRatio: 1.0) { 
+            self.loginButton.center = CGPoint(x: self.view.frame.width / 2, y: originalPosition.y)
+        }
+        
+        animator.startAnimation(afterDelay: 0.3)
+        
         //  Note: You must use constraints to do this animation
         //  Reminder: You need to call something self.view in order to apply the new constraints
         //  Reminder: There is a small delay you need to account for
@@ -232,12 +255,21 @@ class AnimationsViewController: UIViewController, CellTitled {
         
         // 2. Add the animations
         
+        
+        
         let animator = UIViewPropertyAnimator()
     
+
         animator.addAnimations {
+//
+            //self.fireDatabaseLogo.frame = CGRect(origin: self.fireDatabaseLogo.center, size: CGSize(width: self.fireDatabaseLogo.frame.size.width * scaleFactor, height: self.fireDatabaseLogo.frame.size.height * scaleFactor))
+            
+            
             self.fireDatabaseLogo.isHidden = true
             let scaleTrans = CGAffineTransform(scaleX: scaleFactor, y: scaleFactor)
             self.fireDatabaseLogo.transform = scaleTrans
+            
+    
             
         }
         animator.startAnimation()
@@ -250,7 +282,7 @@ class AnimationsViewController: UIViewController, CellTitled {
             self.fireDatabaseLogo.transform = scaleTrans
             self.fireDatabaseLogo.alpha = newAlpha
         }
-        enlargeWithAlphaAnimator.startAnimation()
+        enlargeWithAlphaAnimator.startAnimation(afterDelay: 0.1)
         
     }
     
