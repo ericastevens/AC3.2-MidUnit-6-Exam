@@ -163,36 +163,39 @@ class AnimationsViewController: UIViewController, CellTitled {
         
         // 1. Instantiate your dynamicAnimator
         self.dynamicAnimator = UIDynamicAnimator(referenceView: self.view)
-//
-//        // 2. Instantiate/setup your behaviors
-//        //      a. Collision
-                let collision = UICollisionBehavior()
-                collision.translatesReferenceBoundsIntoBoundary = true
-//
-//        //      b. Gravity
-                let gravity = UIGravityBehavior()
-                let vector = CGVector(dx: 1.0, dy: 0.0)
-                gravity.gravityDirection = vector
-//
-//        //      c. Bounce
-                let bounce = UIDynamicItemBehavior()
-                bounce.elasticity = 0.8
-//
-//        // 3. Add your behaviors to the dynamic animator
-                self.dynamicAnimator?.addBehavior(collision)
-                self.dynamicAnimator?.addBehavior(gravity)
-                self.dynamicAnimator?.addBehavior(bounce)
-//
+
+        // 2. Instantiate/setup your behaviors
+        //      a. Collision
+                self.collisionBehavior = UICollisionBehavior()
+                self.collisionBehavior?.translatesReferenceBoundsIntoBoundary = true
+
+        //      b. Gravity
+                self.gravityBehavior = UIGravityBehavior()
+        
+//              let vector = CGVector(dx: 1.0, dy: 0.0) // falls to the right instead of straight down (check: should be used for container views?)
+                let vector = CGVector(dx: 0.0, dy: 1.0) //falls straight down
+                self.gravityBehavior?.gravityDirection = vector
+        
+
+        //      c. Bounce
+                self.bounceBehavior = UIDynamicItemBehavior()
+                self.bounceBehavior?.elasticity = 0.8
+
+        // 3. Add your behaviors to the dynamic animator
+                self.dynamicAnimator?.addBehavior(collisionBehavior!)
+                self.dynamicAnimator?.addBehavior(gravityBehavior!)
+                self.dynamicAnimator?.addBehavior(bounceBehavior!)
     }
     
     // MARK: Slide Animations
     internal func addSlidingAnimationToUsername() {
         let originalPosition = self.usernameContainerView.center
         
-//
-//        // 1. Add in animation for just the usernameContainerView here (the textField is a subview, so it will animate with it)
+        let newLocation = CGPoint(x: self.view.frame.size.width / 2, y: originalPosition.y)
+    
+        // 1. Add in animation for just the usernameContainerView here (the textField is a subview, so it will animate with it)
             let animator = UIViewPropertyAnimator(duration: 1, dampingRatio: 1.0) { 
-              self.usernameContainerView.center = CGPoint(x: self.view.frame.size.width / 2, y: originalPosition.y)
+              self.usernameContainerView.center = newLocation
         }
 
         animator.startAnimation()
@@ -206,13 +209,7 @@ class AnimationsViewController: UIViewController, CellTitled {
         
         // 1. Add in animation for just the passwordContainerView here (the textField is a subview, so it will animate with it)
         let originalPosition = self.passwordContainerView.center
-//        let timing = UICubicTimingParameters(animationCurve: .easeOut)
-//        let animator = UIViewPropertyAnimator(duration: 1, timingParameters: timing)
-//       a
-//        animator.addAnimations {
-//            self.passwordContainerView.center = CGPoint(x: self.view.frame.size.width / 2, y: originalPosition.y)
-//        }
-//    
+
         let animator = UIViewPropertyAnimator(duration: 1, dampingRatio: 1.0) {
             self.passwordContainerView.center = CGPoint(x: self.view.frame.size.width / 2, y: originalPosition.y)
         }
@@ -234,7 +231,6 @@ class AnimationsViewController: UIViewController, CellTitled {
         }
         
         animator.startAnimation(afterDelay: 0.3)
-        
         //  Note: You must use constraints to do this animation
         //  Reminder: You need to call something self.view in order to apply the new constraints
         //  Reminder: There is a small delay you need to account for
@@ -255,22 +251,15 @@ class AnimationsViewController: UIViewController, CellTitled {
         
         // 2. Add the animations
         
-        
-        
         let animator = UIViewPropertyAnimator()
     
 
         animator.addAnimations {
-//
-            //self.fireDatabaseLogo.frame = CGRect(origin: self.fireDatabaseLogo.center, size: CGSize(width: self.fireDatabaseLogo.frame.size.width * scaleFactor, height: self.fireDatabaseLogo.frame.size.height * scaleFactor))
-            
             
             self.fireDatabaseLogo.isHidden = true
             let scaleTrans = CGAffineTransform(scaleX: scaleFactor, y: scaleFactor)
             self.fireDatabaseLogo.transform = scaleTrans
-            
-    
-            
+        
         }
         animator.startAnimation()
         
@@ -291,18 +280,37 @@ class AnimationsViewController: UIViewController, CellTitled {
         
         // 1. instantiate a new view (Provided for you!)
         let newView = UIView()
+        newView.translatesAutoresizingMaskIntoConstraints = false
         newView.backgroundColor = UIColor(red: CGFloat(drand48()), green: CGFloat(drand48()), blue: CGFloat(drand48()), alpha: 1.0)
         newView.layer.cornerRadius = 20.0
         bouncyViews.append(newView)
         
         // 2. add it to the view hierarchy
+        self.view.addSubview(newView)
         
         // 3. add constraints (make it 40.0 x 40.0)
-    
-        // 4. Add the view to your behaviors
-        
-        // 5. (Extra Credit) Add a random angular velocity (between 0 and 15 degrees) to the bounceBehavior
 
+//        newView.snp.makeConstraints { (view) in
+//            view.size.equalTo(CGSize(width: 40, height: 40))
+//        }
+        
+        let size = CGSize(width: 40.0, height: 40.0)
+        
+        newView.frame = CGRect(origin: self.loginButton.center, size: size)
+        
+        // 4. Add the view to your behaviors
+        bouncyViews.forEach { (view) in
+            gravityBehavior?.addItem(view)
+            collisionBehavior?.addItem(view)
+            bounceBehavior?.addItem(view)
+            
+            // 5. (Extra Credit) Add a random angular velocity (between 0 and 15 degrees) to the bounceBehavior
+            let velocity: CGFloat = CGFloat(arc4random_uniform(15))
+            print("VELOCITY: \(velocity)")
+            bounceBehavior?.addAngularVelocity(velocity, for: view)
+        }
+        
+        //container views and login button disappear after login button is clicked for first time.
     }
     
     
